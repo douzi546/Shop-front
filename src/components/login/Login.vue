@@ -21,14 +21,14 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 
 export default {
   data() {
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
       rules: {
         username: [
@@ -43,24 +43,20 @@ export default {
     }
   },
   methods: {
-    login() {
-      axios
-        .post('http://localhost:8888/api/private/v1/login', this.loginForm)
-        .then(res => {
-          console.log(res)
-          const { data, meta } = res.data
-          if (meta.status === 200) {
-            localStorage.setItem('token', data.token)
-            this.$router.push('home')
-          } else {
-            this.$message({
-              showClose: true,
-              message: meta.msg,
-              type: 'error',
-              duration: 2000
-            })
-          }
+    async login() {
+      const res = await this.$http.post('/login', this.loginForm)
+      const { data, meta } = res.data
+      if (meta.status === 200) {
+        localStorage.setItem('token', data.token)
+        this.$router.push('home')
+      } else {
+        this.$message({
+          showClose: true,
+          message: meta.msg,
+          type: 'error',
+          duration: 2000
         })
+      }
     },
     submitForm() {
       this.$refs.loginForm.validate(valid => {
@@ -81,11 +77,6 @@ export default {
 .loginForm {
   background-color: #282c34;
 }
-#app {
-  width: 100%;
-  height: 100%;
-}
-
 .loginForm,
 .row-bg {
   height: 100%;
